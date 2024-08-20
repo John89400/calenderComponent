@@ -1,0 +1,17 @@
+public with sharing class CalendarController {
+    
+    @AuraEnabled(cacheable=true)
+    public static List<Event> getEventsForMonth(Integer month, Integer year) {
+        // Define start and end dates for the month
+        Date startDate = Date.newInstance(year, month, 1);
+        Date endDate = startDate.addMonths(1).addDays(-1);
+
+        // Query events within the selected month range
+        return [
+            SELECT Id, Subject, StartDateTime, EndDateTime 
+            FROM Event 
+            WHERE StartDateTime >= :startDate 
+            AND StartDateTime <= :endDate
+        ];
+    }
+}
